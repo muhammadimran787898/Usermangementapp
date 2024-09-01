@@ -1,38 +1,11 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-bold mb-4">Welcome to the User List</h1>
-    <ul class="space-y-2">
-      <li v-for="user in users" :key="user.id" class="bg-white shadow p-4 rounded-md">
-        {{ user.name }} ({{ user.role }}, {{ user.status }})
-      </li>
-    </ul>
-  </div>
-</template>
-
-<script setup>
-import { ref } from 'vue'
-
-// Example data, you can replace this with real data fetched from an API
-const users = ref([
-  { id: 1, name: 'John Doe', role: 'admin', status: 'active' },
-  { id: 2, name: 'Jane Smith', role: 'user', status: 'inactive' },
-  { id: 3, name: 'Alice Johnson', role: 'user', status: 'active' }
-])
-</script>
-
-<style scoped>
-/* Add any custom styles for this component */
-</style>
-<template>
-  <div class="p-4">
+  <div class="p-4 flex">
     <h1 class="text-2xl font-bold mb-6">User List</h1>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <!-- Sidebar with Filters -->
-      <UserFilter @filter="applyFilter" @search="applySearch" />
 
-      <!-- User List -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <UserFilter @filter="applyFilter" @search="applySearch" />
       <div class="md:col-span-3">
-        <ul class="space-y-4">
+        <ul class="space-y-4 w-44">
           <li
             v-for="user in filteredUsers"
             :key="user.id"
@@ -110,4 +83,6 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Add any additional styles specific to this component */
+</style>
