@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <h1>User List</h1>
-    <div class="container">
+  <div class="p-4">
+    <h1 class="text-2xl font-bold mb-4">User List</h1>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <UserFilter @filter="applyFilter" @search="applySearch" />
-      <ul>
-        <li v-for="user in filteredUsers" :key="user.id">
-          <router-link :to="`/profile/${user.id}`">{{ user.name }} ({{ user.role }}, {{ user.status }})</router-link>
+      <ul class="md:col-span-3 space-y-2">
+        <li v-for="user in filteredUsers" :key="user.id" class="bg-white shadow p-4 rounded-md">
+          <router-link :to="`/profile/${user.id}`" class="text-blue-500 hover:underline"
+            >{{ user.name }} ({{ user.role }}, {{ user.status }})</router-link
+          >
         </li>
       </ul>
     </div>
@@ -13,8 +15,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import UserFilter from '../components/UserFilter.vue';
+import axios from 'axios'
+import UserFilter from '../components/UserFilter.vue'
 
 export default {
   components: {
@@ -24,55 +26,52 @@ export default {
     return {
       users: [],
       filteredUsers: []
-    };
+    }
   },
   methods: {
     fetchUsers() {
-      axios.get('https://jsonplaceholder.typicode.com/users').then(response => {
-        // Mock role and status for demonstration purposes
-        this.users = response.data.map(user => ({
+      axios.get('https://jsonplaceholder.typicode.com/users').then((response) => {
+        this.users = response.data.map((user) => ({
           id: user.id,
           name: user.name,
           role: user.id % 2 === 0 ? 'admin' : 'user',
           status: user.id % 3 === 0 ? 'active' : 'inactive'
-        }));
-        this.filteredUsers = this.users;
-      });
+        }))
+        this.filteredUsers = this.users
+      })
     },
     applyFilter(filterCriteria) {
-      this.filteredUsers = this.users.filter(user => {
+      this.filteredUsers = this.users.filter((user) => {
         return (
           (filterCriteria.role ? user.role === filterCriteria.role : true) &&
           (filterCriteria.status ? user.status === filterCriteria.status : true)
-        );
-      });
+        )
+      })
     },
     applySearch(query) {
-      let searchQuery = query.toLowerCase().split(' ');
-      this.filteredUsers = this.users.filter(user => {
-        return searchQuery.every(term => {
-          if (term.includes('role:')) {
-            return user.role === term.split(':')[1];
-          } else if (term.includes('status:')) {
-            return user.status === term.split(':')[1];
-          } else {
-            return user.name.toLowerCase().includes(term);
-          }
-        });
-      });
+      const filters = {}
+      const searchTerms = query.toLowerCase().split(' ')
+
+      searchTerms.forEach((term) => {
+        const [key, value] = term.split(':')
+        if (key && value) {
+          filters[key.trim()] = value.trim()
+        }
+      })
+
+      this.filteredUsers = this.users.filter((user) => {
+        return Object.keys(filters).every((key) => {
+          return user[key] && user[key].toLowerCase() === filters[key]
+        })
+      })
     }
   },
   created() {
-    this.fetchUsers();
+    this.fetchUsers()
   }
-};
+}
 </script>
 
-<style>
-.container {
-  display: flex;
-}
-ul {
-  list-style-type: none;
-}
+<style scoped>
+/* Additional styles can go here if needed */
 </style>
